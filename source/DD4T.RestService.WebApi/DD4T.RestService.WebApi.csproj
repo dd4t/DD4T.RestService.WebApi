@@ -165,4 +165,10 @@
   <Target Name="AfterBuild">
   </Target>
   -->
+   <Import Project="..\..\DD4T RestService.Targets" />
+  <Target Name="AfterBuild">
+    <CallTarget Targets="Package" />
+    <Message Text="Installing package to local NuGet repo" Importance="high" Condition="'$(NUGET_LOCALREPO)' != ''"/>
+    <CallTarget Targets="Install" Condition="'$(NUGET_LOCALREPO)' != ''"/>
+  </Target>
 </Project>
