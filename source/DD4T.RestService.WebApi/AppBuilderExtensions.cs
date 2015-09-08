@@ -20,11 +20,19 @@ namespace DD4T.RestService.WebApi
 {
     public static class AppBuilderExtensions
     {
+
         public static void UseDD4TWebApi(this IAppBuilder appBuilder)
         {
-           
+            var builder = new ContainerBuilder();
+            appBuilder.UseDD4TWebApi(builder);
+        }
+        public static void UseDD4TWebApi(this IAppBuilder appBuilder, ContainerBuilder builder)
+        {
             var config = new HttpConfiguration();
-            var container = BuildContainer();
+            builder.RegisterApiControllers(typeof(AppBuilderExtensions).Assembly);
+            builder.UseDD4T();
+
+            var container = builder.Build();
 
             config.DependencyResolver = new AutofacWebApiDependencyResolver(container);
             config.IncludeErrorDetailPolicy = IncludeErrorDetailPolicy.Always;
@@ -37,25 +45,24 @@ namespace DD4T.RestService.WebApi
         }
 
 
-        static ILifetimeScope BuildContainer()
-        {
-            var builder = new ContainerBuilder();
+        //static ILifetimeScope BuildContainer()
+        //{
+        //    var builder = new ContainerBuilder();
 
-            builder.RegisterApiControllers(typeof(AppBuilderExtensions).Assembly);
+        //    builder.RegisterApiControllers(typeof(AppBuilderExtensions).Assembly);
 
-            builder.UseDD4T();
-            //builder.RegisterType<DD4TConfiguration>().As<IDD4TConfiguration>().InstancePerLifetimeScope().PreserveExistingDefaults();
-            //builder.RegisterType<DefaultPublicationResolver>().As<IPublicationResolver>().InstancePerLifetimeScope().PreserveExistingDefaults();
-            //builder.RegisterType<DefaultLogger>().As<ILogger>().InstancePerLifetimeScope().PreserveExistingDefaults();
-            //builder.RegisterType<TridionPageProvider>().As<IPageProvider>().InstancePerLifetimeScope().PreserveExistingDefaults();
-            //builder.RegisterType<TridionComponentPresentationProvider>().As<IComponentPresentationProvider>().InstancePerLifetimeScope().PreserveExistingDefaults();
-            //builder.RegisterType<TridionBinaryProvider>().As<IBinaryProvider>().InstancePerLifetimeScope().PreserveExistingDefaults();
-            //builder.RegisterType<TridionLinkProvider>().As<ILinkProvider>().InstancePerLifetimeScope().PreserveExistingDefaults();
-            //builder.RegisterType<TridionTaxonomyProvider>().As<ITaxonomyProvider>().InstancePerLifetimeScope().PreserveExistingDefaults();
-            //builder.RegisterType<ProvidersFacade>().As<IProvidersFacade>().InstancePerLifetimeScope().PreserveExistingDefaults();
-
-            return builder.Build();
-        }
+        //    builder.UseDD4T();
+        //    //builder.RegisterType<DD4TConfiguration>().As<IDD4TConfiguration>().InstancePerLifetimeScope().PreserveExistingDefaults();
+        //    //builder.RegisterType<DefaultPublicationResolver>().As<IPublicationResolver>().InstancePerLifetimeScope().PreserveExistingDefaults();
+        //    //builder.RegisterType<DefaultLogger>().As<ILogger>().InstancePerLifetimeScope().PreserveExistingDefaults();
+        //    //builder.RegisterType<TridionPageProvider>().As<IPageProvider>().InstancePerLifetimeScope().PreserveExistingDefaults();
+        //    //builder.RegisterType<TridionComponentPresentationProvider>().As<IComponentPresentationProvider>().InstancePerLifetimeScope().PreserveExistingDefaults();
+        //    //builder.RegisterType<TridionBinaryProvider>().As<IBinaryProvider>().InstancePerLifetimeScope().PreserveExistingDefaults();
+        //    //builder.RegisterType<TridionLinkProvider>().As<ILinkProvider>().InstancePerLifetimeScope().PreserveExistingDefaults();
+        //    //builder.RegisterType<TridionTaxonomyProvider>().As<ITaxonomyProvider>().InstancePerLifetimeScope().PreserveExistingDefaults();
+        //    //builder.RegisterType<ProvidersFacade>().As<IProvidersFacade>().InstancePerLifetimeScope().PreserveExistingDefaults();
+        //    return builder.Build();
+        //}
    
     }
 }
