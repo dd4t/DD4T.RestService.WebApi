@@ -41,7 +41,6 @@ namespace DD4T.RestService.WebApi
             appBuilder.UseAutofacMiddleware(container);
             appBuilder.UseAutofacWebApi(config);
             appBuilder.UseWebApi(config);
-          
         }
 
 
