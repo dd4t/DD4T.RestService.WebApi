@@ -22,4 +22,5 @@
       <dependency id="DD4T.DI.Autofac" version="2.0.0-alpha16" />
     </dependencies>
   </metadata>
+
 </package>

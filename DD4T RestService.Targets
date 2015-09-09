@@ -20,19 +20,23 @@
 		<BuildNuGetDirectory>$(BuildPackageDirectory)\lib</BuildNuGetDirectory>
 		<BuildNuGetFramework40Directory>$(BuildNuGetDirectory)\net40</BuildNuGetFramework40Directory>
 		<BuildNuGetFramework45Directory>$(BuildNuGetDirectory)\net45</BuildNuGetFramework45Directory>
+		<BuildNuGetFrameworkContentDirectory>$(BuildPackageDirectory)\content</BuildNuGetFrameworkContentDirectory>
 
 		<NuGetFolder>$(SourceDirectory)\.nuget</NuGetFolder>
 
 		<ConfigurationDirectory>$(BaseDirectory)\configuration</ConfigurationDirectory>
+		<ConfigurationPackageContentDirectory>$(ConfigurationDirectory)\content</ConfigurationPackageContentDirectory>
 
 		<!-- NuSpec file for NuGet Package creation -->
 		<NuSpecFileName>$(ProductName).nuspec</NuSpecFileName>
 		<NuSpecFile>$(ConfigurationDirectory)\$(NuSpecFileName)</NuSpecFile>
+		<StartupFile>$(ConfigurationDirectory)\startup.cs</StartupFile>
+
 	</PropertyGroup>
 	<ItemGroup>
 		<CleanFolders Include="$(BuildOutputDirectory)"/>
 		<CleanFolders Include="TestResults"/>
-		<NuGetStructureFolders Include="$(BuildNugetDirectory);$(BuildNuGetFramework40Directory);$(BuildNuGetFramework45Directory)"/>
+		<NuGetStructureFolders Include="$(BuildNugetDirectory);$(BuildNuGetFramework40Directory);$(BuildNuGetFramework45Directory);$(BuildNuGetFrameworkContentDirectory)"/>
 	</ItemGroup>
 
 	<Import Project="$(MSBuildExtensionsPath)\MSBuildCommunityTasks\MSBuild.Community.Tasks.Targets"/>
@@ -105,20 +109,26 @@
         	<NuGetFiles Include="$(NuSpecFile)"/>
         </ItemGroup>
 
+       
     	<Copy SourceFiles="@(NuGetFiles)" DestinationFiles="@(NuGetFiles->'$(BuildPackageDirectory)\%(Filename)%(Extension)')"/>
     	<Copy SourceFiles="@(MainPackageFiles)" DestinationFiles="@(MainPackageFiles->'$(BuildBinDirectory)\%(Filename)%(Extension)')"/>
 
+    	
+    	
     	<PropertyGroup>
     		<NuSpecFile>$(BuildPackageDirectory)\$(NuSpecFileName)</NuSpecFile>
     	</PropertyGroup>
     	<ItemGroup>
     		<FlattenedPackageFiles Include="$(BuildBinDirectory)\**\*.*"/>
     	</ItemGroup>
+    	<ItemGroup>
+    		<ContentPackageFiles Include="$(ConfigurationPackageContentDirectory)\**\*.*"/>
+    	</ItemGroup>
 
     	<!-- Update version in nuspec file -->
     	<XmlUpdate XmlFileName="$(NuSpecFile)" XPath="//version" Value="$(VersionInfo)" />
 
-
+    	<Copy SourceFiles="@(ContentPackageFiles)" DestinationFiles="@(ContentPackageFiles->'$(BuildNuGetFrameworkContentDirectory)\%(RecursiveDir)%(Filename)%(Extension)')" />
 		<Copy SourceFiles="@(FlattenedPackageFiles)" DestinationFiles="@(FlattenedPackageFiles->'$(BuildNuGetFramework40Directory)\%(RecursiveDir)%(Filename)%(Extension)')" />
 		<Copy SourceFiles="@(FlattenedPackageFiles)" DestinationFiles="@(FlattenedPackageFiles->'$(BuildNuGetFramework45Directory)\%(RecursiveDir)%(Filename)%(Extension)')" />
 
