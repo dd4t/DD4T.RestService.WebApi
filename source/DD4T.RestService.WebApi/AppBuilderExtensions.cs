@@ -42,26 +42,5 @@ namespace DD4T.RestService.WebApi
             appBuilder.UseAutofacWebApi(config);
             appBuilder.UseWebApi(config);
         }
-
-
-        //static ILifetimeScope BuildContainer()
-        //{
-        //    var builder = new ContainerBuilder();
-
-        //    builder.RegisterApiControllers(typeof(AppBuilderExtensions).Assembly);
-
-        //    builder.UseDD4T();
-        //    //builder.RegisterType<DD4TConfiguration>().As<IDD4TConfiguration>().InstancePerLifetimeScope().PreserveExistingDefaults();
-        //    //builder.RegisterType<DefaultPublicationResolver>().As<IPublicationResolver>().InstancePerLifetimeScope().PreserveExistingDefaults();
-        //    //builder.RegisterType<DefaultLogger>().As<ILogger>().InstancePerLifetimeScope().PreserveExistingDefaults();
-        //    //builder.RegisterType<TridionPageProvider>().As<IPageProvider>().InstancePerLifetimeScope().PreserveExistingDefaults();
-        //    //builder.RegisterType<TridionComponentPresentationProvider>().As<IComponentPresentationProvider>().InstancePerLifetimeScope().PreserveExistingDefaults();
-        //    //builder.RegisterType<TridionBinaryProvider>().As<IBinaryProvider>().InstancePerLifetimeScope().PreserveExistingDefaults();
-        //    //builder.RegisterType<TridionLinkProvider>().As<ILinkProvider>().InstancePerLifetimeScope().PreserveExistingDefaults();
-        //    //builder.RegisterType<TridionTaxonomyProvider>().As<ITaxonomyProvider>().InstancePerLifetimeScope().PreserveExistingDefaults();
-        //    //builder.RegisterType<ProvidersFacade>().As<IProvidersFacade>().InstancePerLifetimeScope().PreserveExistingDefaults();
-        //    return builder.Build();
-        //}
-   
     }
 }
