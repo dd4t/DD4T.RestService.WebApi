@@ -74,6 +74,10 @@
       <HintPath>..\packages\DD4T.Core.2.0.5-beta\lib\net45\DD4T.Core.Contracts.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="DD4T.DI.Autofac">
+      <HintPath>..\packages\DD4T.DI.Autofac.2.0.5-beta\lib\net45\DD4T.DI.Autofac.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="DD4T.Factories">
       <HintPath>..\packages\DD4T.Core.2.0.5-beta\lib\net45\DD4T.Factories.dll</HintPath>
       <Private>False</Private>
