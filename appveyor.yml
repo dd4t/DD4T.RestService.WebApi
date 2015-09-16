@@ -1,0 +1,27 @@
+version: 2.0.0.{build}-alpha
+branches:
+  only:
+  - master
+  - develop
+configuration: Release
+assembly_info:
+  patch: true
+  file: '**\AssemblyInfo.*'
+  assembly_version: '{version}'
+  assembly_file_version: '{version}'
+  assembly_informational_version: '{version}'
+install:
+- choco install msbuild.communitytasks -y
+build:
+  project: build.msbuild
+  verbosity: normal
+artifacts:
+- path: build/package/**/*.nupkg
+  name: NuGet Package
+- path: build/package/**/*.zip
+  name: Zip Archive
+notifications:
+  - provider: Slack
+    auth_token:
+      secure: sPqYbVki+502+OjRT+o3eITyiG8UDZ0Fu4M1fejZxs3O6OKtYu9JCNS9Ssw3/XjL
+    channel: development
