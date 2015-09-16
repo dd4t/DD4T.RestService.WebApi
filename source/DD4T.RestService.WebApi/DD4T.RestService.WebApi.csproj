@@ -59,39 +59,35 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="DD4T.ContentModel">
-      <HintPath>..\packages\DD4T.Model.2.0.3-alpha19\lib\net45\DD4T.ContentModel.dll</HintPath>
+      <HintPath>..\packages\DD4T.Model.2.0.4-beta1\lib\net45\DD4T.ContentModel.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="DD4T.ContentModel.Contracts">
-      <HintPath>..\packages\DD4T.Model.2.0.3-alpha19\lib\net45\DD4T.ContentModel.Contracts.dll</HintPath>
+      <HintPath>..\packages\DD4T.Model.2.0.4-beta1\lib\net45\DD4T.ContentModel.Contracts.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="DD4T.ContentModel.XmlSerializers">
-      <HintPath>..\packages\DD4T.Model.2.0.3-alpha19\lib\net45\DD4T.ContentModel.XmlSerializers.dll</HintPath>
+      <HintPath>..\packages\DD4T.Model.2.0.4-beta1\lib\net45\DD4T.ContentModel.XmlSerializers.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="DD4T.Core.Contracts">
-      <HintPath>..\packages\DD4T.Core.2.0.0-alpha44\lib\net45\DD4T.Core.Contracts.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="DD4T.DI.Autofac">
-      <HintPath>..\packages\DD4T.DI.Autofac.2.0.0-alpha16\lib\net45\DD4T.DI.Autofac.dll</HintPath>
+      <HintPath>..\packages\DD4T.Core.2.0.5-beta\lib\net45\DD4T.Core.Contracts.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="DD4T.Factories">
-      <HintPath>..\packages\DD4T.Core.2.0.0-alpha44\lib\net45\DD4T.Factories.dll</HintPath>
+      <HintPath>..\packages\DD4T.Core.2.0.5-beta\lib\net45\DD4T.Factories.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="DD4T.Serialization">
-      <HintPath>..\packages\DD4T.Model.2.0.3-alpha19\lib\net45\DD4T.Serialization.dll</HintPath>
+      <HintPath>..\packages\DD4T.Model.2.0.4-beta1\lib\net45\DD4T.Serialization.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="DD4T.Utils">
-      <HintPath>..\packages\DD4T.Core.2.0.0-alpha44\lib\net45\DD4T.Utils.dll</HintPath>
+      <HintPath>..\packages\DD4T.Core.2.0.5-beta\lib\net45\DD4T.Utils.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="DD4T.ViewModels">
-      <HintPath>..\packages\DD4T.Core.2.0.0-alpha44\lib\net45\DD4T.ViewModels.dll</HintPath>
+      <HintPath>..\packages\DD4T.Core.2.0.5-beta\lib\net45\DD4T.ViewModels.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="log4net">
@@ -172,10 +168,10 @@
   <Target Name="AfterBuild">
   </Target>
   -->
-   <Import Project="..\..\DD4T RestService.Targets" />
+  <Import Project="..\..\DD4T RestService.Targets" />
   <Target Name="AfterBuild">
     <CallTarget Targets="Package" />
-    <Message Text="Installing package to local NuGet repo" Importance="high" Condition="'$(NUGET_LOCALREPO)' != ''"/>
-    <CallTarget Targets="Install" Condition="'$(NUGET_LOCALREPO)' != ''"/>
+    <Message Text="Installing package to local NuGet repo" Importance="high" Condition="'$(NUGET_LOCALREPO)' != ''" />
+    <CallTarget Targets="Install" Condition="'$(NUGET_LOCALREPO)' != ''" />
   </Target>
 </Project>
