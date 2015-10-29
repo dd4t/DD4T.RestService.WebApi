@@ -34,8 +34,6 @@ namespace DD4T.RestService.WebApi.Controllers
         public IHttpActionResult GetContentByUrl(int publicationId, string extension, string url)
         {
             Logger.Debug("PageController.GetContentByUrl publicationId={0}, Url={1}, extension={2}", publicationId, url, extension);
-            if (publicationId == 0)
-                return BadRequest(Messages.EmptyPublicationId);
 
             PageProvider.PublicationId = publicationId;
             var content = PageProvider.GetContentByUrl(url.GetUrl(extension));
@@ -68,8 +66,6 @@ namespace DD4T.RestService.WebApi.Controllers
         public IHttpActionResult GetLastPublishedDateByUrl(int publicationId, string extension, string url)
         {
             Logger.Debug("PageController.GetLastPublishedDateByUrl publicationId={0}, Url={1}, Extension={2}", publicationId, url, extension);
-            if (publicationId == 0)
-                return BadRequest(Messages.EmptyPublicationId);
 
             PageProvider.PublicationId = publicationId;
             var content = PageProvider.GetLastPublishedDateByUrl(url.GetUrl(extension));
