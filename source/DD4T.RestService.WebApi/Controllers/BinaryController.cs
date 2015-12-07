@@ -83,8 +83,6 @@ namespace DD4T.RestService.WebApi.Controllers
         public IHttpActionResult GetBinaryStreamByUrl(int publicationId, string extension, string url)
         {
             Logger.Debug("GetBinaryStreamByUrl  publicationId={0}, url={1}, extension={2}", publicationId, url, extension);
-            if (publicationId == 0)
-                return BadRequest(Messages.EmptyPublicationId);
 
             BinaryProvider.PublicationId = publicationId;
             var binary = BinaryProvider.GetBinaryStreamByUrl(url.GetUrl(extension));
@@ -118,8 +116,6 @@ namespace DD4T.RestService.WebApi.Controllers
         public IHttpActionResult GetLastPublishedDateByUrl(int publicationId, string extension, string url)
         {
             Logger.Debug("GetLastPublishedDateByUrl  publicationId={0}, url={1}, extension={2}", publicationId, url, extension);
-            if (publicationId == 0)
-                return BadRequest(Messages.EmptyPublicationId);
 
             BinaryProvider.PublicationId = publicationId;
             var binary = BinaryProvider.GetLastPublishedDateByUrl(url.GetUrl(extension));
