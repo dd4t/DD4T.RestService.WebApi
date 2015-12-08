@@ -26,9 +26,21 @@ namespace DD4T.RestService.WebApi
             var builder = new ContainerBuilder();
             appBuilder.UseDD4TWebApi(builder);
         }
+
+        public static void UseDD4TWebApi(this IAppBuilder appBuilder, HttpConfiguration config)
+        {
+            var builder = new ContainerBuilder();
+            appBuilder.UseDD4TWebApi(builder, config);
+        }
+
         public static void UseDD4TWebApi(this IAppBuilder appBuilder, ContainerBuilder builder)
         {
             var config = new HttpConfiguration();
+            appBuilder.UseDD4TWebApi(builder, config);
+        }
+
+        public static void UseDD4TWebApi(this IAppBuilder appBuilder, ContainerBuilder builder, HttpConfiguration config)
+        {
             builder.RegisterApiControllers(typeof(AppBuilderExtensions).Assembly);
             builder.UseDD4T();
 
