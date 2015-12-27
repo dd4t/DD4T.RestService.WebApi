@@ -11,6 +11,9 @@ namespace DD4T.RestService.WebApi.Helpers
        
         public static string GetUrl(this string url, string extension)
         {
+            if (url.EndsWith("/"))
+                url = url.Remove(url.Length - 1);
+
             return string.Format("/{0}.{1}", url, extension);  
         }
 
