@@ -9,6 +9,7 @@ using System.Net;
 using System.Net.Http;
 using System.Web.Http;
 using DD4T.ContentModel;
+using System.Web.Http.Description;
 
 namespace DD4T.RestService.WebApi.Controllers
 {
@@ -146,6 +147,7 @@ namespace DD4T.RestService.WebApi.Controllers
 
         [HttpGet]
         [Route("GetBinaryMetaByUrl/{publicationId:int}/{extension}/{*url}")]
+        [ResponseType(typeof(BinaryMeta))]
         public IHttpActionResult GetBinaryMetaByUrl(int publicationId, string extension, string url)
         {
             Logger.Debug("GetBinaryMetaByUrl publicationId={0}, url={1}, extension={2}", publicationId, url, extension);
@@ -153,12 +155,16 @@ namespace DD4T.RestService.WebApi.Controllers
                 return BadRequest(Messages.EmptyPublicationId);
 
             BinaryProvider.PublicationId = publicationId;
-            var binary = BinaryProvider.GetBinaryMetaByUrl(url.GetUrl(extension));
+            IBinaryMeta binaryMeta = BinaryProvider.GetBinaryMetaByUrl(url.GetUrl(extension)) as IBinaryMeta;
+                      
+            if (binaryMeta == null)
+            {
+                return NotFound();
+            }
+            Logger.Debug($"about to return binarymeta {binaryMeta.Id}");
 
-            if (binary == null)
-                NotFound();
 
-            return Ok<IBinaryMeta>(binary);
+            return Ok(binaryMeta);
         }
 
         [HttpGet]
