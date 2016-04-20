@@ -95,7 +95,7 @@ namespace DD4T.RestService.WebApi.Controllers
             return Ok<Stream>(binary);
         }
 
-        [Obsolete("GetBinaryMetaByUri")]
+        [Obsolete("Use GetBinaryMetaByUri method")]
         [HttpGet]
         [Route("GetLastPublishedDateByUri/{publicationId:int}/{id:int}")]
         public IHttpActionResult GetLastPublishedDateByUri(int publicationId, int id)
@@ -113,7 +113,7 @@ namespace DD4T.RestService.WebApi.Controllers
             return Ok<DateTime>(binary);
         }
 
-        [Obsolete("GetBinaryMetaByUrl")]
+        [Obsolete("Use GetBinaryMetaByUrl method")]
         [HttpGet]
         [Route("GetLastPublishedDateByUrl/{publicationId:int}/{extension}/{*url}")]
         public IHttpActionResult GetLastPublishedDateByUrl(int publicationId, string extension, string url)
