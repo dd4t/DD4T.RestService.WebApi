@@ -95,7 +95,7 @@ namespace DD4T.RestService.WebApi.Controllers
             return Ok<Stream>(binary);
         }
 
-
+        [Obsolete("Use GetBinaryMetaByUri method")]
         [HttpGet]
         [Route("GetLastPublishedDateByUri/{publicationId:int}/{id:int}")]
         public IHttpActionResult GetLastPublishedDateByUri(int publicationId, int id)
@@ -113,6 +113,7 @@ namespace DD4T.RestService.WebApi.Controllers
             return Ok<DateTime>(binary);
         }
 
+        [Obsolete("Use GetBinaryMetaByUrl method")]
         [HttpGet]
         [Route("GetLastPublishedDateByUrl/{publicationId:int}/{extension}/{*url}")]
         public IHttpActionResult GetLastPublishedDateByUrl(int publicationId, string extension, string url)
@@ -151,9 +152,7 @@ namespace DD4T.RestService.WebApi.Controllers
         public IHttpActionResult GetBinaryMetaByUrl(int publicationId, string extension, string url)
         {
             Logger.Debug("GetBinaryMetaByUrl publicationId={0}, url={1}, extension={2}", publicationId, url, extension);
-            if (publicationId == 0)
-                return BadRequest(Messages.EmptyPublicationId);
-
+            
             BinaryProvider.PublicationId = publicationId;
             IBinaryMeta binaryMeta = BinaryProvider.GetBinaryMetaByUrl(url.GetUrl(extension)) as IBinaryMeta;
                       
