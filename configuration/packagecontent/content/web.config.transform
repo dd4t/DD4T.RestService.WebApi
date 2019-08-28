@@ -4,6 +4,7 @@
   </configSections> 
   <log4net debug="true"> 
     <appender name="RollingLogFileAppender" type="log4net.Appender.RollingFileAppender"> 
+      <!-- Change the value for the file location -->
       <file value="%%%%%%%" /> 
       <appendToFile value="true" /> 
       <rollingStyle value="Size" /> 
@@ -23,8 +24,9 @@
   <system.webServer>
     <httpErrors errorMode="Detailed" existingResponse="PassThrough" /> 
     <validation validateIntegratedModeConfiguration="false" /> 
-    <modules runAllManagedModulesForAllRequests="true"> 
+    <!-- uncomment the module below for use below SDL Web 8.5-->
+	  <!-- <modules runAllManagedModulesForAllRequests="true"> 
       <add type="Tridion.ContentDelivery.AmbientData.HttpModule" name="AmbientFrameworkModule" preCondition="managedHandler" /> 
-    </modules> 
+    </modules> -->
   </system.webServer> 
 </configuration> 
