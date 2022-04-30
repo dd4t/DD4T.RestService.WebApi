@@ -3,103 +3,92 @@ using DD4T.ContentModel.Contracts.Logging;
 using DD4T.ContentModel.Querying;
 using DD4T.RestService.WebApi.Helpers;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Net;
-using System.Net.Http;
 using System.Web.Http;
 
 namespace DD4T.RestService.WebApi.Controllers
 {
-    [RoutePrefix("componentpresentation")]
-    public class ComponentPresentationController : ApiController
-    {
-        private readonly IComponentPresentationProvider ComponentPresentationProvider;
-        private readonly ILogger Logger;
+	[RoutePrefix("componentpresentation")]
+	public class ComponentPresentationController : ApiController
+	{
+		private readonly IComponentPresentationProvider ComponentPresentationProvider;
+		private readonly ILogger Logger;
 
-        public ComponentPresentationController(IComponentPresentationProvider componentPresentationProvider, ILogger logger)
-        {
-            if (componentPresentationProvider == null)
-                throw new ArgumentNullException("componentPresenstationProvider");
+		public ComponentPresentationController(IComponentPresentationProvider componentPresentationProvider, ILogger logger)
+		{
+			Logger = logger ?? throw new ArgumentNullException("logger");
+			ComponentPresentationProvider = componentPresentationProvider ?? throw new ArgumentNullException("componentPresenstationProvider");
+		}
 
-            if (logger == null)
-                throw new ArgumentNullException("logger");
+		[HttpGet]
+		[Route("GetContent/{publicationId:int}/{id:int}/{templateId?}")]
+		public IHttpActionResult GetContent(int publicationId, int id, int templateId = 0)
+		{
+			Logger.Debug($"GetContent  publicationId={publicationId}, componentId={id} tempalteid={templateId}");
+			if (publicationId <= 0)
+				return BadRequest(Messages.EmptyPublicationId);
 
-            Logger = logger;
-            ComponentPresentationProvider = componentPresentationProvider;
-        }
+			ComponentPresentationProvider.PublicationId = publicationId;
 
-        [HttpGet]
-        [Route("GetContent/{publicationId:int}/{id:int}/{templateId?}")]
-        public IHttpActionResult GetContent(int publicationId, int id, int templateId = 0)
-        {
-            //var templateId = string.Empty;
-            Logger.Debug("GetContent  publicationId={0}, componentId={1} tempalteid={2}", publicationId, id, templateId);
-            if (publicationId == 0)
-                return BadRequest(Messages.EmptyPublicationId);
+			var content = (templateId == 0) ?
+				ComponentPresentationProvider.GetContent(id.ToComponentTcmUri(publicationId)) :
+				ComponentPresentationProvider.GetContent(id.ToComponentTcmUri(publicationId), templateId.ToComponentTemplateTcmUri(publicationId));
 
-            ComponentPresentationProvider.PublicationId = publicationId;
+			if (string.IsNullOrEmpty(content))
+				return NotFound();
 
-            var content = (templateId == 0) ? ComponentPresentationProvider.GetContent(id.ToComponentTcmUri(publicationId)) :
-                    ComponentPresentationProvider.GetContent(id.ToComponentTcmUri(publicationId), templateId.ToComponentTemplateTcmUri(publicationId));
+			return Ok(content);
+		}
 
-            if (string.IsNullOrEmpty(content))
-                return NotFound();
+		[HttpGet]
+		[Route("GetLastPublishedDate/{publicationId:int}/{id:int}")]
+		public IHttpActionResult GetLastPublishedDate(int publicationId, int id)
+		{
+			Logger.Debug($"GetLastPublishedDate  publicationId={publicationId}, componentId={id}");
+			if (publicationId <= 0)
+				return BadRequest(Messages.EmptyPublicationId);
 
-            return Ok<string>(content);
-        }
+			ComponentPresentationProvider.PublicationId = publicationId;
+			var content = ComponentPresentationProvider.GetLastPublishedDate(id.ToComponentTcmUri(publicationId));
 
-        [HttpGet]
-        [Route("GetLastPublishedDate/{publicationId:int}/{id:int}")]
-        public IHttpActionResult GetLastPublishedDate(int publicationId, int id)
-        {
-            Logger.Debug("GetLastPublishedDate  publicationId={0}, componentId={1}", publicationId, id);
-            if (publicationId == 0)
-                return BadRequest(Messages.EmptyPublicationId);
+			return Ok(content);
+		}
 
-            ComponentPresentationProvider.PublicationId = publicationId;
-            var content = ComponentPresentationProvider.GetLastPublishedDate(id.ToComponentTcmUri(publicationId));
+		[HttpGet]
+		[Route("GetContentMultiple/{publicationId:int}/{ids}")]
+		//api/componentpresentation/GetContentMultiple/3/1,2,3,4
+		public IHttpActionResult GetContentMultiple(int publicationId, [ArrayParam] int[] ids)
+		{
+			Logger.Debug($"GetContentMultiple  publicationId={publicationId}, componentId={ids}");
+			if (publicationId <= 0)
+				return BadRequest(Messages.EmptyPublicationId);
 
-            return Ok<DateTime>(content);
-        }
+			ComponentPresentationProvider.PublicationId = publicationId;
 
-        [HttpGet]
-        [Route("GetContentMultiple/{publicationId:int}/{ids}")]
-        //api/componentpresentation/GetContentMultiple/3/1,2,3,4
-        public IHttpActionResult GetContentMultiple(int publicationId, [ArrayParam] int[] ids)
-        {
-            Logger.Debug("GetContentMultiple  publicationId={0}, componentId={1}", publicationId, ids);
-            if (publicationId == 0)
-                return BadRequest(Messages.EmptyPublicationId);
+			var tcmuris = ids.Select(compId => compId.ToComponentTcmUri(publicationId)).ToArray();
+			var content = ComponentPresentationProvider.GetContentMultiple(tcmuris);
 
-            ComponentPresentationProvider.PublicationId = publicationId;
+			if (content.Count == 0)
+				return NotFound();
 
-            //Convert the componentid (input is just item_referenceid to tcmuri's
-            var tcmuri = ids.Select(compId => compId.ToComponentTcmUri(publicationId)).ToArray<string>();
-            var content = ComponentPresentationProvider.GetContentMultiple(tcmuri);
+			return Ok(content);
+		}
 
-            if (content.Count == 0)
-                return NotFound();
+		[HttpGet]
+		[Route("FindComponents/{publicationId:int}/{queryParameters}")]
+		public IHttpActionResult FindComponents(int publicationId, IQuery queryParameters)
+		{
+			Logger.Debug($"FindComponents publicationId={publicationId}, queryParameters={queryParameters}");
+			if (publicationId <= 0)
+				return BadRequest(Messages.EmptyPublicationId);
 
-            return Ok<List<string>>(content);
-        }
+			ComponentPresentationProvider.PublicationId = publicationId;
+			var content = ComponentPresentationProvider.FindComponents(queryParameters);
 
-        [HttpGet]
-        [Route("FindComponents/{publicationId:int}/{queryParameters}")]
-        public IHttpActionResult FindComponents(int publicationId, IQuery queryParameters)
-        {
-            Logger.Debug("FindComponents publicationId={0}, queryParameters={1}", publicationId, queryParameters);
-            if (publicationId == 0)
-                return BadRequest(Messages.EmptyPublicationId);
+			if (content.Count == 0)
+				return NotFound();
 
-            ComponentPresentationProvider.PublicationId = publicationId;
-            var content = ComponentPresentationProvider.FindComponents(queryParameters);
-
-            if (content.Count == 0)
-                return NotFound();
-
-            return Ok<IList<string>>(content);
-        }
-
-    }
+			return Ok(content);
+		}
+	}
 }

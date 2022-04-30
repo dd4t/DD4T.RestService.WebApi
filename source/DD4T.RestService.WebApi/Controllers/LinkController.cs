@@ -2,63 +2,54 @@
 using DD4T.ContentModel.Contracts.Logging;
 using DD4T.RestService.WebApi.Helpers;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
 using System.Web.Http;
 
 namespace DD4T.Rest.WebApi.Controllers
 {
-    [RoutePrefix("link")]
-    public class LinkController : ApiController
-    {
-        private readonly ILinkProvider LinkProvider;
-        private readonly ILogger Logger;
+	[RoutePrefix("link")]
+	public class LinkController : ApiController
+	{
+		private readonly ILinkProvider LinkProvider;
+		private readonly ILogger Logger;
 
-        public LinkController(ILinkProvider linkProvider, ILogger logger)
-        {
-            if (linkProvider == null)
-                throw new ArgumentNullException("linkProvider");
+		public LinkController(ILinkProvider linkProvider, ILogger logger)
+		{
+			LinkProvider = linkProvider ?? throw new ArgumentNullException("linkProvider");
+			Logger = logger ?? throw new ArgumentNullException("logger");
+		}
 
-            if (logger == null)
-                throw new ArgumentNullException("logger");
+		[HttpGet]
+		[Route("ResolveLink/{publicationId:int}/{componentUri:int}")]
+		public IHttpActionResult ResolveLink(int publicationId, int componentUri)
+		{
+			Logger.Debug($"ResolveLink publicationId={publicationId}, componentUri={componentUri}");
+			if (publicationId <= 0)
+				return BadRequest(Messages.EmptyPublicationId);
 
-            LinkProvider = linkProvider;
-            Logger = logger;
-        }
+			LinkProvider.PublicationId = publicationId;
+			var link = LinkProvider.ResolveLink(componentUri.ToComponentTcmUri(publicationId));
 
-        [HttpGet]
-        [Route("ResolveLink/{publicationId:int}/{componentUri:int}")]
-        public IHttpActionResult ResolveLink(int publicationId, int componentUri)
-        {
-            Logger.Debug("ResolveLink publicationId={0}, componentUri={1}", publicationId, componentUri);
-            if (publicationId == 0)
-                return BadRequest(Messages.EmptyPublicationId);
+			if (string.IsNullOrEmpty(link))
+				return NotFound();
 
-            LinkProvider.PublicationId = publicationId;
-            var link = LinkProvider.ResolveLink(componentUri.ToComponentTcmUri(publicationId));
+			return Ok(link);
+		}
 
-            if (string.IsNullOrEmpty(link))
-                return NotFound();
+		[HttpGet]
+		[Route("ResolveLink/{publicationId:int}/{componentUri:int}/{sourcePageUri:int}/{excludeComponentTemplateUri:int}")]
+		public IHttpActionResult ResolveLink(int publicationId, int componentUri, int sourcePageUri, int excludeComponentTemplateUri)
+		{
+			Logger.Debug($"GetContentByUrl publicationId={publicationId}, componentUri={componentUri}, sourcePageUri={sourcePageUri}, excludeComponentTemplateUri{excludeComponentTemplateUri}");
+			if (publicationId <= 0)
+				return BadRequest(Messages.EmptyPublicationId);
 
-            return Ok<string>(link);
-        }
-        [HttpGet]
-        [Route("ResolveLink/{publicationId:int}/{componentUri:int}/{sourcePageUri:int}/{excludeComponentTemplateUri:int}")]
-        public IHttpActionResult ResolveLink(int publicationId, int componentUri, int sourcePageUri, int excludeComponentTemplateUri)
-        {
-            Logger.Debug("GetContentByUrl publicationId={0}, componentUri={1}, sourcePageUri={2}, excludeComponentTemplateUri{3}", publicationId, componentUri, sourcePageUri, excludeComponentTemplateUri);
-            if (publicationId == 0)
-                return BadRequest(Messages.EmptyPublicationId);
+			LinkProvider.PublicationId = publicationId;
+			var link = LinkProvider.ResolveLink(sourcePageUri.ToPageTcmUri(publicationId), componentUri.ToComponentTcmUri(publicationId), excludeComponentTemplateUri.ToComponentTemplateTcmUri(publicationId));
 
-            LinkProvider.PublicationId = publicationId;
-            var link = LinkProvider.ResolveLink(sourcePageUri.ToPageTcmUri(publicationId), componentUri.ToComponentTcmUri(publicationId), excludeComponentTemplateUri.ToComponentTemplateTcmUri(publicationId));
+			if (string.IsNullOrEmpty(link))
+				return NotFound();
 
-            if (string.IsNullOrEmpty(link))
-                return NotFound();
-
-            return Ok<string>(link);
-        }
-    }
+			return Ok(link);
+		}
+	}
 }
